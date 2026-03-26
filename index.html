@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>India Energy Landscape — Sources, Dependencies & Transition Pathways</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
   :root {
     --ink: #1a1a2e;
@@ -624,6 +625,169 @@
     section { padding: 3rem 1.5rem; }
     .matrix-container { aspect-ratio: unset; min-height: 500px; }
   }
+
+  /* ===== CHART STYLES ===== */
+  .chart-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1.4rem;
+    margin: 2rem 0;
+  }
+  .chart-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem;
+    position: relative;
+  }
+  .chart-card.wide {
+    grid-column: 1 / -1;
+  }
+  .chart-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .chart-subtitle {
+    font-size: 0.76rem;
+    color: var(--ink-faint);
+    margin-bottom: 1.2rem;
+    font-style: italic;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  /* India SVG Map */
+  .india-map-section {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+  .india-map-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 2rem;
+    align-items: start;
+  }
+  .map-legend { display: flex; flex-direction: column; gap: 10px; }
+  .map-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.82rem;
+    color: var(--ink-light);
+  }
+  .map-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .map-legend-title {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--ink);
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+  }
+  #indiaMapSvg {
+    width: 100%;
+    height: auto;
+  }
+  #indiaMapSvg .state {
+    stroke: #ccc;
+    stroke-width: 0.5;
+    transition: opacity 0.2s;
+    cursor: pointer;
+  }
+  #indiaMapSvg .state:hover { opacity: 0.75; }
+
+  /* Sankey-style flow */
+  .flow-chart {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 1.5rem;
+    margin: 2rem 0;
+    overflow-x: auto;
+  }
+
+  /* Gauge */
+  .gauge-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  .gauge-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .gauge-label { font-size: 0.78rem; color: var(--ink-light); margin-top: 8px; font-weight: 500; }
+  .gauge-val { font-family: 'DM Mono', monospace; font-size: 1.4rem; font-weight: 600; color: var(--ink); margin-top: 4px; }
+  .gauge-sub { font-size: 0.7rem; color: var(--ink-faint); }
+
+  /* Treemap */
+  .treemap-cell {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+    transition: filter 0.2s;
+    border: 2px solid white;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .treemap-cell:hover { filter: brightness(0.92); }
+  .treemap-label { font-weight: 600; font-size: 0.85rem; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.4); line-height: 1.2; }
+  .treemap-pct { font-family: 'DM Mono', monospace; font-size: 1.2rem; font-weight: 500; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+
+  /* Bubble chart container */
+  .bubble-wrap {
+    position: relative;
+    width: 100%;
+    height: 360px;
+  }
+
+  /* Stacked progress */
+  .stacked-bar-row { display: flex; flex-direction: column; gap: 14px; }
+  .sb-row { display: flex; flex-direction: column; gap: 4px; }
+  .sb-label { font-size: 0.8rem; font-weight: 500; color: var(--ink); display: flex; justify-content: space-between; }
+  .sb-track { height: 22px; background: var(--bg); border-radius: 4px; overflow: hidden; display: flex; }
+  .sb-seg { height: 100%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 600; color: white; overflow: hidden; white-space: nowrap; transition: width 1s ease; }
+
+  /* Radial chart */
+  .radial-wrap { display: flex; justify-content: center; margin: 1rem 0; }
+
+  /* Country flags text */
+  .flag-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .flag-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg); border: 1px solid var(--line);
+    border-radius: 20px; padding: 4px 12px;
+    font-size: 0.78rem; font-weight: 500; color: var(--ink);
+  }
+
+  /* Timeline Gantt */
+  .gantt-wrap { overflow-x: auto; }
+  .gantt-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+  .gantt-table th { font-size: 0.72rem; color: var(--ink-faint); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: center; }
+  .gantt-table td { padding: 6px 8px; border-bottom: 1px solid #f0f0f0; font-size: 0.8rem; }
+  .gantt-bar { height: 18px; border-radius: 4px; opacity: 0.85; }
+  .gantt-name { font-weight: 500; white-space: nowrap; padding-right: 12px; min-width: 160px; }
 </style>
 </head>
 <body>
@@ -828,6 +992,195 @@
       </div>
     </div>
   </div>
+
+  <!-- CHARTS: Donut + Treemap + Line -->
+  <div class="chart-row" style="margin-top:2rem">
+    <div class="chart-card">
+      <div class="chart-title">Primary Energy Supply Mix</div>
+      <div class="chart-subtitle">India TPES 2023 · Source: IEA World Energy Balances 2024</div>
+      <div class="chart-canvas-wrap" style="height:260px">
+        <canvas id="tpesDonut"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Electricity Generation Mix</div>
+      <div class="chart-subtitle">India 2023–24 · Source: CEA Annual Report 2023–24</div>
+      <div class="chart-canvas-wrap" style="height:260px">
+        <canvas id="elecDonut"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Installed Capacity Growth — Solar &amp; Wind</div>
+      <div class="chart-subtitle">GW installed 2015–2024 · Source: MNRE / CEA</div>
+      <div class="chart-canvas-wrap" style="height:260px">
+        <canvas id="renewGrowth"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- India RE capacity by state map -->
+  <div class="india-map-section">
+    <div class="chart-title">Renewable Energy Capacity by State (Indicative)</div>
+    <div class="chart-subtitle">Bubble size = installed solar + wind GW (approx.) · Source: MNRE State-wise RE Data 2024</div>
+    <div class="india-map-grid">
+      <div>
+        <div class="map-legend-title">🗺️ Key Energy States</div>
+        <div class="map-legend">
+          <div class="map-legend-item"><div class="map-dot" style="background:#f4a261"></div><strong>Rajasthan</strong> — 28 GW solar+wind (largest)</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#f4a261"></div><strong>Gujarat</strong> — 22 GW solar+wind + offshore pilot</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#52b788"></div><strong>Tamil Nadu</strong> — 18 GW, strongest wind resource</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#52b788"></div><strong>Karnataka</strong> — 17 GW, RE manufacturing hub</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#3a86ff"></div><strong>Andhra Pradesh</strong> — 15 GW, major solar parks</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#3a86ff"></div><strong>Maharashtra</strong> — 12 GW wind + solar</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#457b9d"></div><strong>Himachal / Uttarakhand</strong> — Large hydro (18+ GW)</div>
+          <div class="map-legend-item"><div class="map-dot" style="background:#9b2226"></div><strong>Tarapur / Rawatbhata / Kudankulam</strong> — Nuclear sites</div>
+        </div>
+        <div style="margin-top:1.5rem">
+          <div class="map-legend-title">🛢️ Oil &amp; Gas Production</div>
+          <div class="map-legend">
+            <div class="map-legend-item"><div class="map-dot" style="background:#c84b11"></div><strong>Mumbai Offshore</strong> — ONGC's main crude block (~18 MT/yr)</div>
+            <div class="map-legend-item"><div class="map-dot" style="background:#c84b11"></div><strong>Rajasthan (Barmer)</strong> — Cairn/Vedanta fields</div>
+            <div class="map-legend-item"><div class="map-dot" style="background:#0077b6"></div><strong>KG Basin (AP coast)</strong> — Gas (underperforming)</div>
+            <div class="map-legend-item"><div class="map-dot" style="background:#0077b6"></div><strong>Dahej / Hazira (Gujarat)</strong> — LNG import terminals</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <svg id="indiaMapSvg" viewBox="0 0 500 560" xmlns="http://www.w3.org/2000/svg">
+          <!-- Simplified India state outlines - schematic representation -->
+          <!-- J&K / Ladakh -->
+          <path class="state" fill="#e8e8e8" d="M160,20 L240,15 L280,35 L275,65 L245,75 L220,80 L195,70 L165,55 Z" title="J&K / Ladakh"/>
+          <text x="210" y="52" font-size="7" fill="#666" text-anchor="middle">J&amp;K</text>
+
+          <!-- HP -->
+          <path class="state" fill="#d1fae5" d="M195,70 L220,80 L245,75 L250,100 L230,115 L205,110 L190,95 Z" title="Himachal Pradesh"/>
+          <text x="218" y="97" font-size="6" fill="#065f46" text-anchor="middle">HP</text>
+
+          <!-- Punjab -->
+          <path class="state" fill="#e8e8e8" d="M155,90 L190,95 L205,110 L190,125 L165,120 L150,105 Z" title="Punjab"/>
+          <text x="175" y="110" font-size="6" fill="#555" text-anchor="middle">PB</text>
+
+          <!-- Uttarakhand -->
+          <path class="state" fill="#bfdbfe" d="M230,115 L265,105 L278,120 L270,140 L245,145 L225,135 Z" title="Uttarakhand"/>
+          <text x="250" y="128" font-size="6" fill="#1e40af" text-anchor="middle">UK</text>
+
+          <!-- Haryana + Delhi -->
+          <path class="state" fill="#e8e8e8" d="M165,120 L190,125 L205,110 L225,135 L215,155 L185,158 L162,145 Z" title="Haryana"/>
+          <text x="190" y="142" font-size="6" fill="#555" text-anchor="middle">HR</text>
+          <circle cx="210" cy="148" r="4" fill="#999" />
+          <text x="210" y="160" font-size="5" fill="#333" text-anchor="middle">Delhi</text>
+
+          <!-- Rajasthan - BIG, solar hotspot -->
+          <path class="state" fill="#fed7aa" d="M100,120 L155,90 L165,120 L162,145 L185,158 L190,200 L175,240 L145,265 L110,255 L85,225 L80,185 L90,155 Z" title="Rajasthan — 28 GW RE"/>
+          <text x="132" y="195" font-size="9" fill="#c2410c" font-weight="bold" text-anchor="middle">Rajasthan</text>
+          <text x="132" y="207" font-size="7" fill="#c2410c" text-anchor="middle">28 GW ☀️💨</text>
+          <circle cx="145" cy="175" r="14" fill="#f4a261" opacity="0.5"/>
+
+          <!-- UP -->
+          <path class="state" fill="#e8e8e8" d="M215,155 L245,145 L270,140 L295,155 L305,175 L295,205 L270,215 L240,210 L215,200 L190,200 L185,158 Z" title="Uttar Pradesh"/>
+          <text x="248" y="185" font-size="7" fill="#555" text-anchor="middle">Uttar Pradesh</text>
+
+          <!-- Bihar -->
+          <path class="state" fill="#e8e8e8" d="M295,155 L330,145 L350,160 L345,185 L320,195 L295,205 L305,175 Z" title="Bihar"/>
+          <text x="322" y="176" font-size="6" fill="#555" text-anchor="middle">Bihar</text>
+
+          <!-- Jharkhand -->
+          <path class="state" fill="#fef3c7" d="M320,195 L345,185 L370,195 L375,220 L355,240 L330,235 L310,220 Z" title="Jharkhand — coal"/>
+          <text x="343" y="216" font-size="6" fill="#555" text-anchor="middle">JH🪨</text>
+
+          <!-- West Bengal -->
+          <path class="state" fill="#e8e8e8" d="M350,160 L385,155 L395,175 L390,205 L375,220 L355,240 L340,225 L345,185 Z" title="West Bengal"/>
+          <text x="372" y="190" font-size="6" fill="#555" text-anchor="middle">WB</text>
+
+          <!-- Odisha -->
+          <path class="state" fill="#e8e8e8" d="M330,235 L355,240 L375,220 L390,205 L395,230 L385,260 L360,275 L335,268 L320,250 Z" title="Odisha"/>
+          <text x="356" y="250" font-size="6" fill="#555" text-anchor="middle">Odisha</text>
+
+          <!-- MP - large -->
+          <path class="state" fill="#fef9c3" d="M175,240 L190,200 L215,200 L240,210 L270,215 L295,205 L310,220 L320,250 L305,270 L280,280 L250,285 L220,280 L195,265 L170,260 Z" title="Madhya Pradesh"/>
+          <text x="247" y="252" font-size="8" fill="#555" text-anchor="middle">Madhya Pradesh</text>
+
+          <!-- Chhattisgarh -->
+          <path class="state" fill="#fef3c7" d="M305,270 L320,250 L335,268 L360,275 L355,300 L330,315 L308,305 L295,285 Z" title="Chhattisgarh — coal"/>
+          <text x="327" y="290" font-size="6" fill="#555" text-anchor="middle">CG🪨</text>
+
+          <!-- Gujarat - solar/wind-->
+          <path class="state" fill="#fed7aa" d="M80,185 L85,225 L110,255 L115,280 L100,300 L75,305 L55,285 L45,260 L50,230 L65,210 Z" title="Gujarat — 22 GW RE + LNG"/>
+          <text x="80" y="258" font-size="8" fill="#c2410c" font-weight="bold" text-anchor="middle">Gujarat</text>
+          <text x="80" y="270" font-size="6" fill="#c2410c" text-anchor="middle">22 GW ☀️⛽</text>
+          <circle cx="65" cy="252" r="11" fill="#f4a261" opacity="0.5"/>
+
+          <!-- Maharashtra -->
+          <path class="state" fill="#dbeafe" d="M115,280 L145,265 L175,240 L170,260 L195,265 L220,280 L225,305 L205,325 L180,335 L150,330 L125,320 L105,305 L100,300 L115,280 Z" title="Maharashtra — 12 GW RE"/>
+          <text x="165" y="305" font-size="8" fill="#1e40af" font-weight="bold" text-anchor="middle">Maharashtra</text>
+          <circle cx="165" cy="290" r="10" fill="#3a86ff" opacity="0.4"/>
+
+          <!-- Telangana -->
+          <path class="state" fill="#e8e8e8" d="M225,305 L250,285 L280,280 L295,285 L308,305 L300,330 L280,345 L255,340 L235,325 Z" title="Telangana"/>
+          <text x="267" y="318" font-size="6" fill="#555" text-anchor="middle">Telangana</text>
+
+          <!-- Andhra Pradesh -->
+          <path class="state" fill="#bfdbfe" d="M235,325 L255,340 L280,345 L308,305 L330,315 L335,340 L315,365 L290,375 L260,370 L235,355 L220,340 Z" title="Andhra Pradesh — 15 GW RE + KG gas"/>
+          <text x="278" y="345" font-size="7" fill="#1e40af" text-anchor="middle">Andhra P.</text>
+          <text x="278" y="356" font-size="6" fill="#1e40af" text-anchor="middle">15 GW ☀️⛽</text>
+          <circle cx="280" cy="340" r="9" fill="#3a86ff" opacity="0.4"/>
+
+          <!-- Karnataka -->
+          <path class="state" fill="#bbf7d0" d="M180,335 L205,325 L225,305 L235,325 L220,340 L235,355 L225,375 L205,388 L180,385 L160,370 L155,350 L165,335 Z" title="Karnataka — 17 GW RE"/>
+          <text x="195" y="360" font-size="7" fill="#166534" font-weight="bold" text-anchor="middle">Karnataka</text>
+          <text x="195" y="371" font-size="6" fill="#166534" text-anchor="middle">17 GW ☀️</text>
+          <circle cx="192" cy="350" r="9" fill="#2d9e5f" opacity="0.45"/>
+
+          <!-- Goa -->
+          <path class="state" fill="#e8e8e8" d="M155,350 L165,335 L180,335 L178,352 L168,358 Z" title="Goa"/>
+
+          <!-- Kerala -->
+          <path class="state" fill="#e8e8e8" d="M170,390 L180,385 L205,388 L215,405 L208,425 L192,440 L175,435 L163,415 Z" title="Kerala"/>
+          <text x="190" y="415" font-size="6" fill="#555" text-anchor="middle">Kerala</text>
+
+          <!-- Tamil Nadu - wind hotspot -->
+          <path class="state" fill="#d1fae5" d="M205,388 L225,375 L260,370 L270,390 L265,415 L245,435 L220,445 L200,440 L192,440 L208,425 L215,405 Z" title="Tamil Nadu — 18 GW RE"/>
+          <text x="232" y="415" font-size="7" fill="#065f46" font-weight="bold" text-anchor="middle">Tamil Nadu</text>
+          <text x="232" y="427" font-size="6" fill="#065f46" text-anchor="middle">18 GW 💨☀️</text>
+          <circle cx="242" cy="405" r="10" fill="#52b788" opacity="0.5"/>
+
+          <!-- NE States simplified -->
+          <path class="state" fill="#e8e8e8" d="M385,155 L415,140 L435,155 L440,175 L425,185 L400,180 L390,165 Z" title="NE States"/>
+          <text x="415" y="165" font-size="6" fill="#555" text-anchor="middle">NE</text>
+
+          <!-- Mumbai offshore oil marker -->
+          <circle cx="110" cy="325" r="6" fill="#c84b11" opacity="0.7"/>
+          <text x="108" y="320" font-size="6" fill="#c84b11" text-anchor="middle">🛢️ Mumbai</text>
+          <text x="108" y="312" font-size="5" fill="#c84b11" text-anchor="middle">Offshore</text>
+
+          <!-- Kudankulam nuclear -->
+          <circle cx="220" cy="450" r="6" fill="#9b2226" opacity="0.8"/>
+          <text x="220" y="462" font-size="6" fill="#9b2226" text-anchor="middle">⚛️ Kudankulam</text>
+
+          <!-- KG Basin gas -->
+          <circle cx="290" cy="380" r="5" fill="#0077b6" opacity="0.7"/>
+          <text x="305" y="380" font-size="6" fill="#0077b6">⛽KG Basin</text>
+
+          <!-- Compass / scale -->
+          <text x="460" y="40" font-size="20" fill="#ccc" text-anchor="middle">N</text>
+          <line x1="460" y1="44" x2="460" y2="60" stroke="#ccc" stroke-width="1.5"/>
+
+          <!-- Legend dots -->
+          <circle cx="20" cy="490" r="7" fill="#f4a261" opacity="0.7"/>
+          <text x="30" y="494" font-size="7" fill="#555">Solar hotspot</text>
+          <circle cx="20" cy="506" r="7" fill="#52b788" opacity="0.7"/>
+          <text x="30" y="510" font-size="7" fill="#555">Wind hotspot</text>
+          <circle cx="20" cy="522" r="7" fill="#3a86ff" opacity="0.7"/>
+          <text x="30" y="526" font-size="7" fill="#555">Mixed RE</text>
+          <circle cx="20" cy="538" r="6" fill="#c84b11" opacity="0.7"/>
+          <text x="30" y="542" font-size="7" fill="#555">Oil/Gas field</text>
+          <circle cx="20" cy="554" r="6" fill="#9b2226" opacity="0.8"/>
+          <text x="30" y="558" font-size="7" fill="#555">Nuclear plant</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
 </section>
 
 <hr class="section-divider">
@@ -926,6 +1279,63 @@
     </table>
   </div>
   <p class="footnote">Sources: Ministry of Petroleum &amp; Natural Gas (MoPNG) Annual Report 2023–24; IEA India 2020 Energy Policy Review (updated); CEA Annual Report 2023–24; IEA ETP 2024.</p>
+
+  <!-- IMPORT CHARTS -->
+  <div class="chart-row" style="margin-top:1.5rem">
+    <div class="chart-card">
+      <div class="chart-title">Crude Oil Import Sources (FY2023–24)</div>
+      <div class="chart-subtitle">% share of total crude imports · MoPNG Annual Report 2023–24</div>
+      <div class="chart-canvas-wrap" style="height:270px">
+        <canvas id="oilSourcesChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Energy Import Bill Breakdown</div>
+      <div class="chart-subtitle">USD billion FY2023–24 · MoPNG / MoC data</div>
+      <div class="chart-canvas-wrap" style="height:270px">
+        <canvas id="importBillChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Import Dependency by Fuel</div>
+      <div class="chart-subtitle">% of demand met by imports · IEA / MoPNG 2024</div>
+      <div class="chart-canvas-wrap" style="height:270px">
+        <canvas id="importDepChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stacked supply concentration -->
+  <div class="chart-card" style="margin-top:1rem">
+    <div class="chart-title">Crude Oil Supplier Concentration Risk — FY2021 vs FY2024</div>
+    <div class="chart-subtitle">Russia share surged from ~2% to ~35% post-2022 · MoPNG data</div>
+    <div class="stacked-bar-row" style="margin-top:1rem">
+      <div class="sb-row">
+        <div class="sb-label"><span>FY2021 (pre-Ukraine war)</span><span>232 MT total</span></div>
+        <div class="sb-track">
+          <div class="sb-seg" style="width:23%;background:#c84b11" title="Iraq 23%">Iraq 23%</div>
+          <div class="sb-seg" style="width:18%;background:#f4a261" title="Saudi 18%">Saudi 18%</div>
+          <div class="sb-seg" style="width:12%;background:#457b9d" title="UAE 12%">UAE 12%</div>
+          <div class="sb-seg" style="width:2%;background:#9b2226" title="Russia 2%">RU</div>
+          <div class="sb-seg" style="width:11%;background:#52b788" title="Nigeria 11%">NG</div>
+          <div class="sb-seg" style="width:10%;background:#6366f1" title="Kuwait 10%">KW</div>
+          <div class="sb-seg" style="width:24%;background:#aaa" title="Others 24%">Others 24%</div>
+        </div>
+      </div>
+      <div class="sb-row">
+        <div class="sb-label"><span>FY2024 (post-Ukraine war)</span><span>232 MT total</span></div>
+        <div class="sb-track">
+          <div class="sb-seg" style="width:35%;background:#9b2226" title="Russia 35%">Russia 35% ⚠️</div>
+          <div class="sb-seg" style="width:22%;background:#c84b11" title="Iraq 22%">Iraq 22%</div>
+          <div class="sb-seg" style="width:16%;background:#f4a261" title="Saudi 16%">Saudi 16%</div>
+          <div class="sb-seg" style="width:7%;background:#457b9d" title="UAE 7%">UAE</div>
+          <div class="sb-seg" style="width:20%;background:#aaa" title="Others 20%">Others</div>
+        </div>
+      </div>
+    </div>
+    <p class="footnote" style="margin-top:10px">⚠️ Russia's rapid rise to #1 supplier increases geopolitical concentration risk despite favourable pricing. Secondary sanctions risk from US/EU remains a concern for Indian refiners and banks.</p>
+  </div>
+
 </section>
 
 <hr class="section-divider">
@@ -975,6 +1385,31 @@
       <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Ethanol: sugarcane-dependent feedstock vulnerable to drought/monsoon variability</span></div>
       <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Biogas/CBG: fragmented biomass supply chains — collection and transport infrastructure weak</span></div>
       <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Land-use competition: energy crops vs food crops is a socio-political constraint</span></div>
+    </div>
+  </div>
+
+  <!-- Supply risk radar + heatmap -->
+  <div class="chart-row" style="margin-top:2rem">
+    <div class="chart-card">
+      <div class="chart-title">Supply Security Risk Radar</div>
+      <div class="chart-subtitle">Multi-dimensional risk scoring per fuel (higher = more vulnerable) · Author's analysis based on IEA / MoPNG data</div>
+      <div class="chart-canvas-wrap" style="height:300px">
+        <canvas id="riskRadar"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Import Volume Trend — Crude Oil</div>
+      <div class="chart-subtitle">Million tonnes per year · MoPNG Annual Reports 2019–2024</div>
+      <div class="chart-canvas-wrap" style="height:300px">
+        <canvas id="crudeTrendChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Ethanol Blending Progress (E-programme)</div>
+      <div class="chart-subtitle">% blend achieved vs target · MoPNG Biofuel data 2015–2024</div>
+      <div class="chart-canvas-wrap" style="height:300px">
+        <canvas id="ethanolChart"></canvas>
+      </div>
     </div>
   </div>
 </section>
@@ -1453,6 +1888,60 @@
       </div>
     </div>
   </div>
+
+  <!-- Capacity projection charts -->
+  <div class="chart-row" style="margin-top:2.5rem">
+    <div class="chart-card wide">
+      <div class="chart-title">India Electricity Capacity Projection: 2024 → 2030 → 2047 (GW)</div>
+      <div class="chart-subtitle">Actual 2024 vs CEA NEP 2030 target vs Viksit Bharat 2047 aspirational · Sources: CEA NEP 2023–32, MNRE, NITI Aayog</div>
+      <div class="chart-canvas-wrap" style="height:320px">
+        <canvas id="capacityProjection"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="chart-card">
+      <div class="chart-title">Oil Import Savings from Transition Measures</div>
+      <div class="chart-subtitle">Estimated MMT crude oil saved/yr by intervention · MNRE / MoPNG projections</div>
+      <div class="chart-canvas-wrap" style="height:260px">
+        <canvas id="oilSavingsChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Green Hydrogen Cost Trajectory</div>
+      <div class="chart-subtitle">USD/kg · IEA ETP 2024 &amp; NGHM projections</div>
+      <div class="chart-canvas-wrap" style="height:260px">
+        <canvas id="h2CostChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Solar Module Manufacturing: India vs Import</div>
+      <div class="chart-subtitle">GW capacity · IEA ETP 2024 STEPS scenario</div>
+      <div class="chart-canvas-wrap" style="height:260px">
+        <canvas id="solarMfgChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gantt roadmap -->
+  <div class="flow-chart" style="margin-top:1rem">
+    <div class="chart-title" style="margin-bottom:6px">Policy &amp; Technology Deployment Gantt — India Energy Transition</div>
+    <div class="chart-subtitle">Key milestones by technology stream · Sources: MoPNG, MNRE, CEA, NITI Aayog, NGHM official documents</div>
+    <div class="gantt-wrap" style="margin-top:1.2rem">
+      <table class="gantt-table">
+        <thead>
+          <tr>
+            <th style="text-align:left">Technology / Initiative</th>
+            <th>2022</th><th>2023</th><th>2024</th><th>2025</th><th>2026</th>
+            <th>2027</th><th>2028</th><th>2029</th><th>2030</th><th>2035</th><th>2047</th><th>2070</th>
+          </tr>
+        </thead>
+        <tbody id="ganttBody"></tbody>
+      </table>
+    </div>
+  </div>
+
 </section>
 
 <hr class="section-divider">
@@ -1538,26 +2027,16 @@
 </footer>
 
 <script>
-  // Scroll to section
+  /* ─── NAV & UI HELPERS ─── */
   function scrollTo(id) {
     document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
-    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
-    const map = {
-      'sources-section': 0, 'imports-section': 1, 'supply-section': 2,
-      'alternatives-section': 3, 'matrix-section': 4, 'pathways-section': 5, 'sources-ref': 6
-    };
-    document.querySelectorAll('.nav-link')[map[id]]?.classList.add('active');
   }
-
-  // Tab switching
   function showTab(group, name) {
     document.querySelectorAll(`[id^="${group}-"]`).forEach(p => p.classList.remove('active'));
     document.getElementById(`${group}-${name}`).classList.add('active');
     event.target.closest('.tab-buttons')?.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
   }
-
-  // Animate bars on load
   function animateBars() {
     document.querySelectorAll('.ec-bar[data-width]').forEach(bar => {
       const w = bar.getAttribute('data-width');
@@ -1566,25 +2045,432 @@
     });
   }
 
-  // Intersection observer for nav highlight
+  // Nav section highlight
   const sections = ['sources-section','imports-section','supply-section','alternatives-section','matrix-section','pathways-section','sources-ref'];
   const navLinks = document.querySelectorAll('.nav-link');
-  
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         const idx = sections.indexOf(entry.target.id);
-        if (idx >= 0) {
-          navLinks.forEach(n => n.classList.remove('active'));
-          navLinks[idx]?.classList.add('active');
-        }
+        if (idx >= 0) { navLinks.forEach(n => n.classList.remove('active')); navLinks[idx]?.classList.add('active'); }
       }
     });
-  }, { threshold: 0.3 });
+  }, { threshold: 0.25 });
+  sections.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
 
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
+  /* ─── CHART DEFAULTS ─── */
+  Chart.defaults.font.family = "'DM Sans', sans-serif";
+  Chart.defaults.color = '#4a4a6a';
+  Chart.defaults.plugins.legend.labels.boxWidth = 12;
+  Chart.defaults.plugins.legend.labels.padding = 14;
+
+  const COLORS = {
+    coal: '#2d2d2d', oil: '#c84b11', gas: '#0077b6',
+    solar: '#f4a261', wind: '#52b788', hydro: '#457b9d',
+    nuclear: '#9b2226', bio: '#6b8f3e', hydrogen: '#7209b7',
+    ev: '#3a86ff', biomethane: '#4d908e', traditional: '#b5838d',
+    grey: '#adb5bd'
+  };
+
+  /* ─── 1. TPES DONUT ─── */
+  new Chart(document.getElementById('tpesDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Coal & Lignite', 'Crude Oil & Products', 'Natural Gas', 'Solar & Wind', 'Hydro', 'Nuclear', 'Traditional Biomass', 'Modern Bioenergy'],
+      datasets: [{
+        data: [44, 29, 6, 6, 4, 1, 9, 1],
+        backgroundColor: [COLORS.coal, COLORS.oil, COLORS.gas, COLORS.solar, COLORS.hydro, COLORS.nuclear, COLORS.traditional, COLORS.bio],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      cutout: '62%',
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } }
+      }
+    }
+  });
+
+  /* ─── 2. ELECTRICITY DONUT ─── */
+  new Chart(document.getElementById('elecDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Coal Thermal', 'Solar + Wind', 'Large Hydro', 'Nuclear', 'Gas', 'Other RE'],
+      datasets: [{
+        data: [72, 16, 11, 3, 3, 5],
+        backgroundColor: [COLORS.coal, COLORS.solar, COLORS.hydro, COLORS.nuclear, COLORS.gas, COLORS.bio],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      cutout: '62%',
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } }
+      }
+    }
+  });
+
+  /* ─── 3. RENEWABLE CAPACITY GROWTH ─── */
+  new Chart(document.getElementById('renewGrowth'), {
+    type: 'line',
+    data: {
+      labels: ['2015','2016','2017','2018','2019','2020','2021','2022','2023','2024'],
+      datasets: [
+        {
+          label: 'Solar PV (GW)', data: [4, 9, 18, 26, 35, 40, 49, 62, 82, 100],
+          borderColor: COLORS.solar, backgroundColor: 'rgba(244,162,97,0.12)',
+          fill: true, tension: 0.4, pointRadius: 3
+        },
+        {
+          label: 'Wind (GW)', data: [25, 28, 33, 35, 38, 39, 40, 43, 45, 48],
+          borderColor: COLORS.wind, backgroundColor: 'rgba(82,183,136,0.10)',
+          fill: true, tension: 0.4, pointRadius: 3
+        },
+        {
+          label: 'Total Non-Fossil (GW)', data: [118, 126, 148, 172, 198, 220, 245, 278, 340, 410],
+          borderColor: COLORS.hydro, borderDash: [4,3],
+          tension: 0.4, pointRadius: 3, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+      scales: {
+        y: { title: { display: true, text: 'GW', font: { size: 10 } }, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 4. OIL SOURCES PIE ─── */
+  new Chart(document.getElementById('oilSourcesChart'), {
+    type: 'pie',
+    data: {
+      labels: ['Russia','Iraq','Saudi Arabia','UAE','USA','Nigeria','Kuwait','Others'],
+      datasets: [{
+        data: [35, 22, 16, 7, 4, 4, 3, 9],
+        backgroundColor: ['#9b2226','#c84b11','#e9c46a','#457b9d','#3a86ff','#52b788','#6366f1','#adb5bd'],
+        borderWidth: 2, borderColor: '#fff'
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 10 } } },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed}%` } }
+      }
+    }
+  });
+
+  /* ─── 5. IMPORT BILL BAR ─── */
+  new Chart(document.getElementById('importBillChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Crude Oil', 'LNG / Gas', 'Coal (thermal)', 'Coking Coal', 'Solar modules', 'EV batteries'],
+      datasets: [{
+        label: 'USD Billion (FY2024)',
+        data: [112, 16, 19, 9, 4, 5],
+        backgroundColor: [COLORS.oil, COLORS.gas, COLORS.coal, '#555', COLORS.solar, COLORS.ev],
+        borderRadius: 5, borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { title: { display: true, text: 'USD Billion', font: { size: 10 } }, grid: { color: '#f0f0f0' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 6. IMPORT DEPENDENCY BARS ─── */
+  new Chart(document.getElementById('importDepChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Crude Oil', 'Coking Coal', 'EV Batteries', 'LNG', 'Solar Modules', 'Thermal Coal', 'Uranium'],
+      datasets: [{
+        label: '% Import Dependency',
+        data: [87.6, 85, 72, 50, 60, 25, 60],
+        backgroundColor: ctx => {
+          const v = ctx.raw;
+          return v > 70 ? '#ef4444' : v > 40 ? '#f59e0b' : '#22c55e';
+        },
+        borderRadius: 5, borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x}% imported` } }
+      },
+      scales: {
+        x: { max: 100, title: { display: true, text: '% of demand imported', font: { size: 10 } }, grid: { color: '#f0f0f0' } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 7. SUPPLY RISK RADAR ─── */
+  new Chart(document.getElementById('riskRadar'), {
+    type: 'radar',
+    data: {
+      labels: ['Import Dependency', 'Supplier Concentration', 'Price Volatility', 'Chokepoint Exposure', 'Strategic Reserve', 'Domestic Alt. Availability'],
+      datasets: [
+        {
+          label: 'Crude Oil', data: [88, 75, 85, 80, 30, 55],
+          borderColor: COLORS.oil, backgroundColor: 'rgba(200,75,17,0.12)', pointBackgroundColor: COLORS.oil
+        },
+        {
+          label: 'Natural Gas (LNG)', data: [50, 60, 80, 65, 20, 65],
+          borderColor: COLORS.gas, backgroundColor: 'rgba(0,119,182,0.10)', pointBackgroundColor: COLORS.gas
+        },
+        {
+          label: 'Coal', data: [25, 55, 50, 30, 60, 40],
+          borderColor: COLORS.coal, backgroundColor: 'rgba(45,45,45,0.08)', pointBackgroundColor: COLORS.coal
+        },
+        {
+          label: 'Solar/EV Supply Chain', data: [60, 85, 40, 20, 10, 70],
+          borderColor: COLORS.solar, backgroundColor: 'rgba(244,162,97,0.10)', pointBackgroundColor: COLORS.solar
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+      scales: {
+        r: {
+          min: 0, max: 100,
+          ticks: { stepSize: 25, font: { size: 9 }, backdropColor: 'transparent' },
+          pointLabels: { font: { size: 9.5 } },
+          grid: { color: '#e8e8ee' }
+        }
+      }
+    }
+  });
+
+  /* ─── 8. CRUDE OIL IMPORT TREND ─── */
+  new Chart(document.getElementById('crudeTrendChart'), {
+    type: 'bar',
+    data: {
+      labels: ['FY19','FY20','FY21','FY22','FY23','FY24'],
+      datasets: [
+        {
+          label: 'Import Volume (MT)',
+          data: [227, 222, 194, 212, 232, 232],
+          backgroundColor: 'rgba(200,75,17,0.75)',
+          borderRadius: 5, yAxisID: 'y'
+        },
+        {
+          label: 'Import Bill (USD Bn)',
+          data: [112, 102, 63, 119, 158, 112],
+          type: 'line', borderColor: '#1a1a2e',
+          backgroundColor: 'transparent',
+          tension: 0.4, pointRadius: 4, yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+      scales: {
+        y: { title: { display: true, text: 'MT', font: { size: 9 } }, grid: { color: '#f0f0f0' } },
+        y1: { position: 'right', title: { display: true, text: 'USD Bn', font: { size: 9 } }, grid: { display: false } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 9. ETHANOL BLENDING ─── */
+  new Chart(document.getElementById('ethanolChart'), {
+    type: 'bar',
+    data: {
+      labels: ['FY15','FY17','FY19','FY21','FY22','FY23','FY24','FY26T'],
+      datasets: [
+        {
+          label: 'Achieved Blend %',
+          data: [1.4, 2.0, 5.0, 8.1, 10.0, 12.0, 14.6, null],
+          backgroundColor: 'rgba(107,143,62,0.75)', borderRadius: 4
+        },
+        {
+          label: 'Target Blend %',
+          data: [null, null, null, null, null, null, null, 20],
+          backgroundColor: 'rgba(107,143,62,0.25)',
+          borderRadius: 4,
+          borderColor: '#6b8f3e', borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+      scales: {
+        y: { max: 25, title: { display: true, text: '% blend in petrol', font: { size: 9 } }, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 10. CAPACITY PROJECTION GROUPED BAR ─── */
+  new Chart(document.getElementById('capacityProjection'), {
+    type: 'bar',
+    data: {
+      labels: ['Coal Thermal', 'Solar PV', 'Wind', 'Large Hydro', 'Nuclear', 'Gas', 'Offshore Wind', 'Battery Storage'],
+      datasets: [
+        {
+          label: 'Actual 2024 (GW)',
+          data: [230, 100, 48, 47, 7.5, 25, 0.1, 0.2],
+          backgroundColor: 'rgba(26,26,46,0.75)', borderRadius: 4
+        },
+        {
+          label: 'CEA NEP Target 2030 (GW)',
+          data: [280, 280, 100, 62, 22, 25, 5, 34],
+          backgroundColor: 'rgba(244,162,97,0.80)', borderRadius: 4
+        },
+        {
+          label: 'Viksit Bharat Aspiration 2047 (GW)',
+          data: [150, 700, 300, 120, 100, 40, 60, 300],
+          backgroundColor: 'rgba(45,158,95,0.75)', borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } },
+      scales: {
+        y: { title: { display: true, text: 'GW', font: { size: 10 } }, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 11. OIL SAVINGS HORIZONTAL BAR ─── */
+  new Chart(document.getElementById('oilSavingsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['E20 Ethanol blending', 'EV penetration (2030)', 'CBG replacing CNG/LNG', 'SAF (2030 pilot)', 'Biodiesel B20', 'Green H₂ (fertiliser, 2030)'],
+      datasets: [{
+        label: 'Estimated MMT crude oil saved / yr',
+        data: [9, 12, 5, 0.5, 2, 3],
+        backgroundColor: [COLORS.bio, COLORS.ev, COLORS.biomethane, '#6366f1', COLORS.oil, COLORS.hydrogen],
+        borderRadius: 4, borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { title: { display: true, text: 'MMT/yr', font: { size: 9 } }, grid: { color: '#f0f0f0' } },
+        y: { grid: { display: false }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+
+  /* ─── 12. GREEN HYDROGEN COST TRAJECTORY ─── */
+  new Chart(document.getElementById('h2CostChart'), {
+    type: 'line',
+    data: {
+      labels: ['2020','2023','2025','2027','2030','2035','2040'],
+      datasets: [
+        {
+          label: 'Green H₂ (India, USD/kg)',
+          data: [6.5, 4.5, 3.8, 3.0, 2.5, 1.8, 1.3],
+          borderColor: COLORS.hydrogen, backgroundColor: 'rgba(114,9,183,0.08)',
+          fill: true, tension: 0.4, pointRadius: 4
+        },
+        {
+          label: 'Grey H₂ (steam methane, USD/kg)',
+          data: [1.1, 1.3, 1.2, 1.2, 1.2, 1.1, 1.0],
+          borderColor: COLORS.grey, borderDash: [5,4],
+          tension: 0.1, pointRadius: 3, fill: false
+        },
+        {
+          label: 'NGHM Target (USD/kg)',
+          data: [null, null, null, null, 1.5, null, null],
+          borderColor: COLORS.bio, pointStyle: 'triangle', pointRadius: 8,
+          showLine: false, fill: false
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } },
+      scales: {
+        y: { title: { display: true, text: 'USD / kg H₂', font: { size: 9 } }, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 13. SOLAR MANUFACTURING ─── */
+  new Chart(document.getElementById('solarMfgChart'), {
+    type: 'bar',
+    data: {
+      labels: ['2023','2025','2027','2030','2035'],
+      datasets: [
+        {
+          label: 'Domestic Production (GW)',
+          data: [6, 18, 32, 56, 69],
+          backgroundColor: 'rgba(244,162,97,0.8)', borderRadius: 4
+        },
+        {
+          label: 'Net Imports (GW)',
+          data: [14, 10, 6, -6, -10],
+          backgroundColor: ctx => ctx.raw < 0 ? 'rgba(45,158,95,0.7)' : 'rgba(200,75,17,0.6)',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { font: { size: 10 } } },
+        tooltip: { callbacks: { label: ctx => ctx.raw < 0 ? ` Net Export: ${Math.abs(ctx.raw)} GW` : ` ${ctx.dataset.label}: ${ctx.raw} GW` } }
+      },
+      scales: {
+        y: { title: { display: true, text: 'GW (negative = export)', font: { size: 9 } }, grid: { color: '#f0f0f0' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  /* ─── 14. GANTT ─── */
+  const ganttData = [
+    { name: '☀️ Solar PV Scale-up',          color: '#f4a261', start: 0, end: 11, note: 'Ongoing — 100 GW by 2030' },
+    { name: '🌾 Ethanol E20 Programme',       color: '#6b8f3e', start: 1, end: 4,  note: 'E20 target FY2026' },
+    { name: '🐄 CBG / SATAT (5000 plants)',   color: '#4d908e', start: 1, end: 7,  note: 'Roll-out 2023–29' },
+    { name: '⚡ EV FAME / PM E-DRIVE',        color: '#3a86ff', start: 0, end: 5,  note: 'Ongoing subsidies 2-3W/Bus' },
+    { name: '🔋 ACC Battery PLI (50 GWh)',    color: '#7209b7', start: 2, end: 8,  note: '50 GWh domestic by 2030' },
+    { name: '☀️ Solar Mfg PLI (Integrated)',  color: '#e76f51', start: 1, end: 6,  note: '48 GW module capacity' },
+    { name: '🟢 Green H₂ Mission (NGHM)',     color: '#7209b7', start: 2, end: 8,  note: '5 MT / 125 GW electrolyser 2030' },
+    { name: '💨 Offshore Wind (30 GW)',       color: '#52b788', start: 3, end: 9,  note: 'Tendering from 2025' },
+    { name: '⚛️ Nuclear Expansion (PHWRs)',   color: '#9b2226', start: 2, end: 10, note: '22 GW by 2035' },
+    { name: '💧 Pumped Hydro (NHP 2.0)',      color: '#457b9d', start: 3, end: 9,  note: '66 GW target 2030–35' },
+    { name: '🏭 H₂-DRI Green Steel',          color: '#adb5bd', start: 4, end: 10, note: 'Commercial scale 2031–35' },
+    { name: '✈️ SAF / Bio-ATF Aviation',      color: '#6366f1', start: 3, end: 9,  note: 'Pilot 2025, scale 2028+' },
+    { name: '⚛️ Thorium / SMR (BARC)',        color: '#b5838d', start: 5, end: 11, note: 'R&D → prototype 2040+' },
+  ];
+  const cols = ['2022','2023','2024','2025','2026','2027','2028','2029','2030','2035','2047','2070'];
+  const tbody = document.getElementById('ganttBody');
+  ganttData.forEach(row => {
+    const tr = document.createElement('tr');
+    let cells = `<td class="gantt-name">${row.name}</td>`;
+    cols.forEach((_, i) => {
+      if (i >= row.start && i <= row.end) {
+        const isFirst = i === row.start, isLast = i === row.end;
+        const radius = isFirst && isLast ? '4px' : isFirst ? '4px 0 0 4px' : isLast ? '0 4px 4px 0' : '0';
+        cells += `<td style="padding:3px 1px"><div class="gantt-bar" style="background:${row.color};border-radius:${radius}" title="${row.note}"></div></td>`;
+      } else {
+        cells += `<td></td>`;
+      }
+    });
+    tr.innerHTML = cells;
+    tbody.appendChild(tr);
   });
 
   window.addEventListener('load', animateBars);
