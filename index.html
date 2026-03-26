@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>India Energy Landscape — Sources, Dependencies & Transition Pathways</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --ink-light: #4a4a6a;
+    --ink-faint: #8888aa;
+    --bg: #fafaf8;
+    --white: #ffffff;
+    --line: #e2e2e8;
+    --coal: #2d2d2d;
+    --oil: #c84b11;
+    --gas: #0077b6;
+    --renewables: #2d9e5f;
+    --bio: #6b8f3e;
+    --nuclear: #9b2226;
+    --hydro: #457b9d;
+    --solar: #f4a261;
+    --wind: #52b788;
+    --hydrogen: #7209b7;
+    --electric: #3a86ff;
+    --high-trl: #2d9e5f;
+    --low-trl: #f4a261;
+    --high-sub: #1d3557;
+    --low-sub: #a8dadc;
+    --accent: #c84b11;
+    --accent2: #0077b6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(250,250,248,0.96);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 2rem;
+    height: 54px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--ink);
+    white-space: nowrap;
+    margin-right: 1.5rem;
+    text-decoration: none;
+  }
+  .nav-brand span { color: var(--accent); }
+  .nav-links {
+    display: flex;
+    gap: 2px;
+    flex-wrap: nowrap;
+  }
+  .nav-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    color: var(--ink-light);
+    text-decoration: none;
+    transition: all 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: none;
+  }
+  .nav-link:hover, .nav-link.active {
+    background: var(--ink);
+    color: white;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 5rem 2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--ink);
+  }
+  .hero-title .accent { color: var(--accent); }
+  .hero-subtitle {
+    margin-top: 1rem;
+    font-size: 1.05rem;
+    color: var(--ink-light);
+    font-weight: 300;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .hero-stat {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.2rem;
+  }
+  .hero-stat .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .hero-stat .unit { font-size: 0.85rem; color: var(--ink-faint); margin-top: 2px; }
+  .hero-stat .label { font-size: 0.8rem; color: var(--ink-light); margin-top: 6px; }
+  .hero-stat.highlight { background: var(--ink); color: white; border-color: var(--ink); }
+  .hero-stat.highlight .num, .hero-stat.highlight .unit, .hero-stat.highlight .label { color: white; }
+  .hero-stat.highlight .unit { color: rgba(255,255,255,0.6); }
+  .hero-stat.highlight .label { color: rgba(255,255,255,0.7); }
+
+  /* SECTIONS */
+  section {
+    padding: 4rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  /* ENERGY MIX BARS */
+  .energy-mix-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.2rem;
+  }
+  .energy-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.4rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .energy-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .energy-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .energy-card.coal::before { background: var(--coal); }
+  .energy-card.oil::before { background: var(--oil); }
+  .energy-card.gas::before { background: var(--gas); }
+  .energy-card.renewables::before { background: var(--renewables); }
+  .energy-card.nuclear::before { background: var(--nuclear); }
+  .energy-card.hydro::before { background: var(--hydro); }
+
+  .ec-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .ec-name { font-weight: 600; font-size: 1rem; }
+  .ec-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+  .ec-bar-wrap {
+    height: 6px;
+    background: var(--line);
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  .ec-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  .ec-detail { font-size: 0.8rem; color: var(--ink-light); line-height: 1.5; }
+  .ec-import-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-top: 6px;
+    letter-spacing: 0.03em;
+  }
+  .import-high { background: #fee2e2; color: #991b1b; }
+  .import-med { background: #fef3c7; color: #92400e; }
+  .import-low { background: #d1fae5; color: #065f46; }
+
+  .coal .ec-pct, .coal .ec-bar { color: var(--coal); background: var(--coal); }
+  .oil .ec-pct { color: var(--oil); } .oil .ec-bar { background: var(--oil); }
+  .gas .ec-pct { color: var(--gas); } .gas .ec-bar { background: var(--gas); }
+  .renewables .ec-pct { color: var(--renewables); } .renewables .ec-bar { background: var(--renewables); }
+  .nuclear .ec-pct { color: var(--nuclear); } .nuclear .ec-bar { background: var(--nuclear); }
+  .hydro .ec-pct { color: var(--hydro); } .hydro .ec-bar { background: var(--hydro); }
+
+  /* IMPORT TABLE */
+  .import-table-wrap {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead tr { background: var(--ink); color: white; }
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  tbody tr { border-bottom: 1px solid var(--line); transition: background 0.15s; }
+  tbody tr:hover { background: #f7f7fb; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 12px 16px; font-size: 0.875rem; vertical-align: middle; }
+  .risk-dot {
+    display: inline-block;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .risk-high { background: #ef4444; }
+  .risk-med { background: #f59e0b; }
+  .risk-low { background: #22c55e; }
+
+  /* SUPPLY CHAIN */
+  .vuln-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .vuln-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 1.4rem;
+  }
+  .vuln-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .vuln-icon { font-size: 1.2rem; }
+  .vuln-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.82rem;
+    color: var(--ink-light);
+    line-height: 1.45;
+  }
+  .vuln-bullet { color: var(--accent); flex-shrink: 0; font-weight: bold; margin-top: 2px; }
+
+  /* 2x2 MATRIX */
+  .matrix-section { background: white; border-radius: 16px; border: 1px solid var(--line); padding: 2rem; }
+  .matrix-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 0.85;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .matrix-grid {
+    position: absolute;
+    inset: 60px 20px 50px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 8px;
+  }
+  .quadrant {
+    border-radius: 8px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .q1 { background: #f0fdf4; border: 1.5px solid #86efac; } /* high TRL, high sub */
+  .q2 { background: #fffbeb; border: 1.5px solid #fde68a; } /* high TRL, low sub */
+  .q3 { background: #eff6ff; border: 1.5px solid #93c5fd; } /* low TRL, high sub */
+  .q4 { background: #fdf4ff; border: 1.5px solid #d8b4fe; } /* low TRL, low sub */
+  .q-label {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 8px;
+  }
+  .q1 .q-label { color: #166534; }
+  .q2 .q-label { color: #92400e; }
+  .q3 .q-label { color: #1e40af; }
+  .q4 .q-label { color: #6b21a8; }
+
+  .tech-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.74rem;
+    font-weight: 500;
+    padding: 4px 8px;
+    border-radius: 6px;
+    margin: 2px;
+    line-height: 1.3;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .chip-green { background: #dcfce7; color: #166534; }
+  .chip-amber { background: #fef9c3; color: #854d0e; }
+  .chip-blue { background: #dbeafe; color: #1e40af; }
+  .chip-purple { background: #f3e8ff; color: #6b21a8; }
+  .tech-chip:hover { transform: scale(1.05); box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+
+  .axis-label-x {
+    position: absolute;
+    bottom: 0;
+    left: 80px;
+    right: 20px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--ink-light);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+  }
+  .axis-label-y {
+    position: absolute;
+    top: 60px;
+    bottom: 50px;
+    left: 0;
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--ink-light);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .axis-label-y span { writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); }
+  .matrix-title {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--ink);
+  }
+  .axis-arrow {
+    position: absolute;
+    font-size: 1rem;
+    color: var(--ink-faint);
+  }
+
+  /* ALTERNATIVES */
+  .alt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.2rem;
+  }
+  .alt-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .alt-header {
+    padding: 14px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--line);
+  }
+  .alt-source-name { font-weight: 600; font-size: 0.9rem; }
+  .alt-body { padding: 14px 18px; }
+  .alt-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 0.82rem;
+  }
+  .alt-arrow { color: var(--renewables); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .alt-tech-name { font-weight: 600; color: var(--ink); }
+  .alt-desc { color: var(--ink-light); line-height: 1.4; }
+  .trl-badge {
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+    margin-left: 4px;
+    vertical-align: middle;
+  }
+  .trl-9 { background: #dcfce7; color: #166534; }
+  .trl-7 { background: #d1fae5; color: #065f46; }
+  .trl-6 { background: #fef9c3; color: #713f12; }
+  .trl-5 { background: #fef3c7; color: #92400e; }
+  .trl-4 { background: #ffe4e6; color: #9f1239; }
+
+  /* PATHWAY TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 6px; bottom: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  .tl-item {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  .tl-dot {
+    position: absolute;
+    left: -2rem;
+    top: 5px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--line);
+  }
+  .tl-year {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--ink-faint);
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+  }
+  .tl-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 6px; }
+  .tl-body { font-size: 0.82rem; color: var(--ink-light); line-height: 1.55; }
+  .tl-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .tl-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    color: var(--ink-faint);
+  }
+  .tl-dot-now { background: var(--renewables); box-shadow: 0 0 0 3px rgba(45,158,95,0.2); }
+  .tl-dot-near { background: var(--solar); box-shadow: 0 0 0 3px rgba(244,162,97,0.2); }
+  .tl-dot-mid { background: var(--gas); box-shadow: 0 0 0 3px rgba(0,119,182,0.2); }
+  .tl-dot-long { background: var(--hydrogen); box-shadow: 0 0 0 3px rgba(114,9,183,0.2); }
+
+  /* SOURCES */
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+  }
+  .source-item {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.8rem;
+  }
+  .source-org { font-weight: 600; color: var(--ink); }
+  .source-doc { color: var(--ink-light); margin-top: 2px; }
+  .source-url { color: var(--accent2); font-family: 'DM Mono', monospace; font-size: 0.72rem; margin-top: 4px; }
+
+  /* DIVIDER */
+  .section-divider {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    border: none;
+    border-top: 1px solid var(--line);
+  }
+
+  /* TOOLTIP */
+  .tooltip-wrap { position: relative; display: inline-block; }
+  .tooltip-content {
+    display: none;
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: white;
+    font-size: 0.75rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 220px;
+    z-index: 50;
+    line-height: 1.5;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  }
+  .tooltip-wrap:hover .tooltip-content { display: block; }
+
+  /* INTRO TEXT */
+  .intro-text {
+    max-width: 820px;
+    font-size: 1rem;
+    color: var(--ink-light);
+    line-height: 1.75;
+    margin-bottom: 2.5rem;
+  }
+  .intro-text strong { color: var(--ink); font-weight: 600; }
+
+  /* CALLOUT */
+  .callout {
+    background: #fff9f0;
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.4rem;
+    font-size: 0.875rem;
+    color: var(--ink-light);
+    margin-bottom: 2rem;
+    line-height: 1.65;
+  }
+  .callout strong { color: var(--ink); }
+
+  /* FOOTNOTE */
+  .footnote {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  /* FLEX ROW */
+  .flex-row { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .flex-half { flex: 1 1 calc(50% - 0.75rem); min-width: 280px; }
+
+  /* TABS */
+  .tab-buttons { display: flex; gap: 4px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tab-btn {
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: white;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.7);
+    padding: 2.5rem;
+    text-align: center;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    margin-top: 4rem;
+  }
+  footer strong { color: white; }
+
+  @media (max-width: 720px) {
+    .hero { grid-template-columns: 1fr; gap: 2rem; padding: 3rem 1.5rem 2rem; }
+    section { padding: 3rem 1.5rem; }
+    .matrix-container { aspect-ratio: unset; min-height: 500px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#top">India <span>Energy</span></a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="scrollTo('sources-section')">Energy Sources</button>
+    <button class="nav-link" onclick="scrollTo('imports-section')">Import Dependencies</button>
+    <button class="nav-link" onclick="scrollTo('supply-section')">Supply Chain Risks</button>
+    <button class="nav-link" onclick="scrollTo('alternatives-section')">Alternatives</button>
+    <button class="nav-link" onclick="scrollTo('matrix-section')">2×2 Matrix</button>
+    <button class="nav-link" onclick="scrollTo('pathways-section')">Pathways</button>
+    <button class="nav-link" onclick="scrollTo('sources-ref')">Sources</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero" id="top">
+  <div>
+    <div class="section-num">INDIA ENERGY LANDSCAPE — 2024–25</div>
+    <h1 class="hero-title">Sources, Dependencies<br>&amp; <span class="accent">Transition</span><br>Pathways</h1>
+    <p class="hero-subtitle">A data-driven overview of India's current energy mix, import vulnerabilities, bio-based and clean substitutes, and the roadmap to energy security — drawing on IEA, MoPNG, MNRE, and CEA official data.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat highlight">
+      <div class="num">966</div>
+      <div class="unit">Mtoe</div>
+      <div class="label">Total Primary Energy Supply (2023)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">~$165B</div>
+      <div class="unit">USD / year</div>
+      <div class="label">Fossil fuel import bill (oil, gas, coal)</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">87.6%</div>
+      <div class="unit">import dep.</div>
+      <div class="label">Crude oil import dependency</div>
+    </div>
+    <div class="hero-stat">
+      <div class="num">3rd</div>
+      <div class="unit">globally</div>
+      <div class="label">Largest energy consumer in the world</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- SECTION 1: ENERGY SOURCES -->
+<section id="sources-section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">India's Primary Energy Mix</h2>
+  </div>
+  <p class="intro-text">
+    India's energy system is <strong>heavily fossil-fuel dependent</strong>, with coal forming the backbone of electricity generation and oil dominating the transport sector. Renewables are the fastest-growing segment, with India targeting <strong>500 GW of non-fossil electricity capacity by 2030</strong>. The data below reflects the 2023–24 picture based on IEA, CEA, and MoPNG reporting.
+  </p>
+
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="showTab('mix','primary')">Primary Energy</button>
+    <button class="tab-btn" onclick="showTab('mix','electricity')">Electricity Generation</button>
+  </div>
+
+  <div id="mix-primary" class="tab-panel active">
+    <div class="energy-mix-grid">
+
+      <div class="energy-card coal">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">🪨 Coal &amp; Lignite</div>
+            <div class="ec-detail" style="margin-top:4px">Dominant fuel for electricity (72% of generation) and industry. India is 3rd largest producer globally but also 2nd largest importer of coal.</div>
+          </div>
+          <div class="ec-pct">44%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar coal" style="width:44%" data-width="44"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of Total Primary Energy Supply (TPES)</div>
+        <div><span class="ec-import-flag import-med">⚡ ~25% imported — mainly from Indonesia, Australia, S. Africa</span></div>
+      </div>
+
+      <div class="energy-card oil">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">🛢️ Crude Oil &amp; Products</div>
+            <div class="ec-detail" style="margin-top:4px">Transport sector (petrol, diesel, aviation fuel) and petrochemicals dominate demand. Domestic production covers only ~12% of needs.</div>
+          </div>
+          <div class="ec-pct">29%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar oil" style="width:29%" data-width="29"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES</div>
+        <div><span class="ec-import-flag import-high">🔴 87.6% imported — Iraq, Saudi Arabia, Russia, UAE</span></div>
+      </div>
+
+      <div class="energy-card gas">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">🔵 Natural Gas</div>
+            <div class="ec-detail" style="margin-top:4px">Used for fertiliser production (urea), city gas distribution, and limited power generation. LNG imports rising as domestic production declines.</div>
+          </div>
+          <div class="ec-pct">6%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar gas" style="width:6%" data-width="6"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES</div>
+        <div><span class="ec-import-flag import-high">🔴 ~50% imported as LNG — Qatar, UAE, USA, Russia</span></div>
+      </div>
+
+      <div class="energy-card renewables">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">☀️ Solar &amp; Wind</div>
+            <div class="ec-detail" style="margin-top:4px">India's fastest-growing energy source. 189 GW solar + wind installed as of 2024. Target: 500 GW non-fossil capacity by 2030. Domestic manufacturing scaling rapidly under PLI.</div>
+          </div>
+          <div class="ec-pct">6%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar renewables" style="width:6%" data-width="6"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES (electricity sector share: ~16%)</div>
+        <div><span class="ec-import-flag import-low">🟢 Domestically generated — minimal imports</span></div>
+      </div>
+
+      <div class="energy-card hydro">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">💧 Hydropower</div>
+            <div class="ec-detail" style="margin-top:4px">Large hydro contributes ~11% of electricity. Constrained by geography, silt, and monsoon variability. Most economical large sites already developed.</div>
+          </div>
+          <div class="ec-pct">4%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar hydro" style="width:4%" data-width="4"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES</div>
+        <div><span class="ec-import-flag import-low">🟢 Domestic resource</span></div>
+      </div>
+
+      <div class="energy-card nuclear">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">⚛️ Nuclear</div>
+            <div class="ec-detail" style="margin-top:4px">~7.5 GW installed capacity (2024). India plans aggressive expansion — 100 GW nuclear by 2047. Uranium imports required; domestic thorium reserves are world's largest.</div>
+          </div>
+          <div class="ec-pct">1%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar nuclear" style="width:1%" data-width="1"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES</div>
+        <div><span class="ec-import-flag import-med">🟡 Uranium imported; thorium-cycle future</span></div>
+      </div>
+
+      <div class="energy-card" style="border-top: 4px solid var(--bio);">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">🌿 Traditional Biomass</div>
+            <div class="ec-detail" style="margin-top:4px">Fuelwood, crop residue, and dung cakes — used for cooking by ~800M rural Indians. Health and environmental liabilities are severe. UJJWALA scheme cutting use.</div>
+          </div>
+          <div class="ec-pct" style="color:var(--bio)">9%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar" style="background:var(--bio); width:9%" data-width="9"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES (mostly household use)</div>
+        <div><span class="ec-import-flag import-low">🟢 Domestic resource — transitioning to cleaner forms</span></div>
+      </div>
+
+      <div class="energy-card" style="border-top: 4px solid #6366f1;">
+        <div class="ec-top">
+          <div>
+            <div class="ec-name">🌾 Modern Bioenergy (Ethanol/Biogas)</div>
+            <div class="ec-detail" style="margin-top:4px">Ethanol blending in petrol (E20 target by 2025–26), biogas/CBG for cooking &amp; vehicles. GOBAR-Dhan scheme for biogas from agri-waste. Rapid scale-up underway.</div>
+          </div>
+          <div class="ec-pct" style="color:#6366f1">&lt;1%</div>
+        </div>
+        <div class="ec-bar-wrap"><div class="ec-bar" style="background:#6366f1; width:1.5%" data-width="1.5"></div></div>
+        <div style="font-size:0.8rem; color:var(--ink-light)">Share of TPES — rapidly growing</div>
+        <div><span class="ec-import-flag import-low">🟢 Domestically produced from sugarcane, grain, biomass</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="mix-electricity" class="tab-panel">
+    <div class="energy-mix-grid">
+      <div class="energy-card coal">
+        <div class="ec-top"><div><div class="ec-name">🪨 Coal Power</div></div><div class="ec-pct">72%</div></div>
+        <div class="ec-bar-wrap"><div class="ec-bar coal" data-width="72" style="width:72%"></div></div>
+        <div class="ec-detail">~230 GW installed thermal capacity. Core of grid reliability. NTPC and state discoms are dominant players.</div>
+      </div>
+      <div class="energy-card renewables">
+        <div class="ec-top"><div><div class="ec-name">☀️ Wind + Solar</div></div><div class="ec-pct">16%</div></div>
+        <div class="ec-bar-wrap"><div class="ec-bar renewables" data-width="16" style="width:16%"></div></div>
+        <div class="ec-detail">190 GW installed (Dec 2024). Rajasthan, Gujarat, Tamil Nadu are leading states. Growing rapidly — India added 25+ GW solar in 2023 alone.</div>
+      </div>
+      <div class="energy-card hydro">
+        <div class="ec-top"><div><div class="ec-name">💧 Large Hydro</div></div><div class="ec-pct">11%</div></div>
+        <div class="ec-bar-wrap"><div class="ec-bar hydro" data-width="11" style="width:11%"></div></div>
+        <div class="ec-detail">46.9 GW installed. Major projects in Himachal Pradesh, Uttarakhand, NE India. Pumped hydro being promoted for storage.</div>
+      </div>
+      <div class="energy-card nuclear">
+        <div class="ec-top"><div><div class="ec-name">⚛️ Nuclear</div></div><div class="ec-pct">3%</div></div>
+        <div class="ec-bar-wrap"><div class="ec-bar nuclear" data-width="3" style="width:3%"></div></div>
+        <div class="ec-detail">7.5 GW. 21 operating reactors. 10 new reactors under construction. NPCIL aims for 22 GW by 2031.</div>
+      </div>
+      <div class="energy-card gas">
+        <div class="ec-top"><div><div class="ec-name">🔵 Gas Power</div></div><div class="ec-pct">3%</div></div>
+        <div class="ec-bar-wrap"><div class="ec-bar gas" data-width="3" style="width:3%"></div></div>
+        <div class="ec-detail">25 GW of gas-based capacity largely underutilised due to high LNG prices. Mainly used for peaking.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 2: IMPORT DEPENDENCIES -->
+<section id="imports-section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Import Dependencies &amp; Supply Vulnerabilities</h2>
+  </div>
+  <p class="intro-text">
+    India's energy import bill exceeded <strong>$165 billion in FY2023–24</strong>, accounting for approximately 25–30% of total merchandise imports. Oil alone constitutes the single largest import item. Dependence on a narrow set of suppliers creates geopolitical and price-shock risks.
+  </p>
+  <div class="callout">
+    <strong>Key Risk:</strong> India imports 87.6% of its crude oil, ~50% of its natural gas (as LNG), and ~25% of its coal. Russia has emerged as India's largest crude supplier (~35% share in 2023–24) following the Ukraine war, offering discounted barrels — but creating a new concentration risk.
+  </div>
+
+  <div class="import-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Energy Type</th>
+          <th>Import Volume</th>
+          <th>Import Dep.</th>
+          <th>Top Suppliers</th>
+          <th>Geo Risk</th>
+          <th>Price Risk</th>
+          <th>Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Crude Oil</strong></td>
+          <td>232 MT (FY24)</td>
+          <td><span style="font-weight:700;color:#dc2626">87.6%</span></td>
+          <td>Russia 35%, Iraq 22%, Saudi 16%, UAE 7%</td>
+          <td><span class="risk-dot risk-high"></span>Very High</td>
+          <td><span class="risk-dot risk-high"></span>Very High</td>
+          <td>📈 Rising</td>
+        </tr>
+        <tr>
+          <td><strong>LNG / Natural Gas</strong></td>
+          <td>~27 BCM equiv.</td>
+          <td><span style="font-weight:700;color:#f59e0b">~50%</span></td>
+          <td>Qatar 35%, UAE 15%, USA 14%, Oman 12%</td>
+          <td><span class="risk-dot risk-med"></span>Medium</td>
+          <td><span class="risk-dot risk-high"></span>High</td>
+          <td>📈 Rising</td>
+        </tr>
+        <tr>
+          <td><strong>Thermal Coal</strong></td>
+          <td>~265 MT (FY24)</td>
+          <td><span style="font-weight:700;color:#f59e0b">~25%</span></td>
+          <td>Indonesia 40%, Australia 30%, S. Africa 15%</td>
+          <td><span class="risk-dot risk-med"></span>Medium</td>
+          <td><span class="risk-dot risk-med"></span>Medium</td>
+          <td>📉 Expected to fall</td>
+        </tr>
+        <tr>
+          <td><strong>Coking Coal</strong></td>
+          <td>~60 MT</td>
+          <td><span style="font-weight:700;color:#dc2626">&gt;85%</span></td>
+          <td>Australia 45%, USA 25%, Russia 20%</td>
+          <td><span class="risk-dot risk-high"></span>High</td>
+          <td><span class="risk-dot risk-high"></span>High</td>
+          <td>↔️ Stable</td>
+        </tr>
+        <tr>
+          <td><strong>Uranium</strong></td>
+          <td>~600–700 tU/yr</td>
+          <td><span style="font-weight:700;color:#f59e0b">~60%</span></td>
+          <td>Kazakhstan, Russia, Canada, France</td>
+          <td><span class="risk-dot risk-med"></span>Medium</td>
+          <td><span class="risk-dot risk-low"></span>Low</td>
+          <td>📈 Will rise with nuclear expansion</td>
+        </tr>
+        <tr>
+          <td><strong>Solar Modules</strong></td>
+          <td>~20 GW (2023)</td>
+          <td><span style="font-weight:700;color:#f59e0b">~60%</span></td>
+          <td>China &gt;95% of imports</td>
+          <td><span class="risk-dot risk-high"></span>High</td>
+          <td><span class="risk-dot risk-med"></span>Medium</td>
+          <td>📉 Falling (PLI schemes)</td>
+        </tr>
+        <tr>
+          <td><strong>Li-ion Batteries (EVs)</strong></td>
+          <td>Growing fast</td>
+          <td><span style="font-weight:700;color:#dc2626">&gt;70%</span></td>
+          <td>China dominant</td>
+          <td><span class="risk-dot risk-high"></span>High</td>
+          <td><span class="risk-dot risk-med"></span>Medium</td>
+          <td>📉 Falling (ACC PLI)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="footnote">Sources: Ministry of Petroleum &amp; Natural Gas (MoPNG) Annual Report 2023–24; IEA India 2020 Energy Policy Review (updated); CEA Annual Report 2023–24; IEA ETP 2024.</p>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 3: SUPPLY CHAIN RISKS -->
+<section id="supply-section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Supply Chain Vulnerabilities</h2>
+  </div>
+  <div class="vuln-grid">
+    <div class="vuln-card">
+      <div class="vuln-title"><span class="vuln-icon">🛢️</span> Crude Oil — Chokepoint Risks</div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Strait of Hormuz carries ~80% of India's Gulf oil — any blockage disrupts supply severely</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Russia dependency (35% share) exposes India to secondary sanctions risk from the US/EU</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>SPR (Strategic Petroleum Reserve) holds only ~9.5 MMbbl — covers ~10 days of imports</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Dollar-denominated oil pricing creates FX exposure — rupee depreciation inflates import bill</span></div>
+    </div>
+    <div class="vuln-card">
+      <div class="vuln-title"><span class="vuln-icon">🔵</span> Natural Gas — LNG Price Volatility</div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>India does not have long-term LNG contracts covering all its needs — spot market exposure</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Fertiliser (urea) sector heavily dependent on gas — energy disruption → food security risk</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>LNG terminal capacity concentrated: Dahej, Hazira, Kochi, Dabhol — limited regasification pipeline</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Domestic gas production from KG Basin has underperformed; ONGC reserves declining</span></div>
+    </div>
+    <div class="vuln-card">
+      <div class="vuln-title"><span class="vuln-icon">🪨</span> Coal — Logistical &amp; Quality Risks</div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>CIL (Coal India Ltd) struggles with logistics: rail bottlenecks delay pit-head coal to power plants</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Imported high-calorific coal is blended with domestic — Indonesian export tax/ban threats (2022) caused power crisis</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Coking coal for steel: >85% imported — Australia's export controls or disruptions are high-impact</span></div>
+    </div>
+    <div class="vuln-card">
+      <div class="vuln-title"><span class="vuln-icon">☀️</span> Solar &amp; Clean Tech — China Dependence</div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>~95% of India's solar module imports come from China — PLI scheme aims to build domestic capacity</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>No wafer or polysilicon manufacturing in India — full upstream dependency on China</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>EV batteries: >70% imported; ACC PLI targeting 50 GWh domestic capacity by 2030</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Critical minerals (lithium, cobalt, rare earths) — India has minimal domestic reserves; KII (Khanij Bidesh India) established for overseas acquisition</span></div>
+    </div>
+    <div class="vuln-card">
+      <div class="vuln-title"><span class="vuln-icon">⚛️</span> Nuclear — Fuel &amp; Technology Gaps</div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Uranium imports from Kazakhstan, Russia, Canada — diversified but subject to NSG restrictions</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Long construction times (10–15 years for new plants) limit near-term flex</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Thorium-based reactors (India's long-term plan) still at experimental TRL — AHWR not commercial</span></div>
+    </div>
+    <div class="vuln-card">
+      <div class="vuln-title"><span class="vuln-icon">🌿</span> Bioenergy — Feedstock &amp; Logistics</div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Ethanol: sugarcane-dependent feedstock vulnerable to drought/monsoon variability</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Biogas/CBG: fragmented biomass supply chains — collection and transport infrastructure weak</span></div>
+      <div class="vuln-item"><span class="vuln-bullet">▸</span><span>Land-use competition: energy crops vs food crops is a socio-political constraint</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 4: ALTERNATIVES -->
+<section id="alternatives-section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Alternatives to Each Fossil Energy Source</h2>
+  </div>
+  <p class="intro-text">
+    The table below maps each major fossil fuel use to its most viable alternatives for India — considering technology readiness, domestic resource availability, cost competitiveness, and policy support as per IEA ETP 2024 and India's National Energy policies.
+  </p>
+
+  <div class="alt-grid">
+    <!-- COAL -->
+    <div class="alt-card">
+      <div class="alt-header" style="background:#f3f3f3">
+        <div class="alt-source-name">🪨 Replacing Coal in Power</div>
+        <span class="trl-badge trl-9">Current TRL: 9</span>
+      </div>
+      <div class="alt-body">
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Solar PV + BESS <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">Utility-scale solar with battery storage. India's levelised cost of solar is now below ₹2.5/kWh. Storage still adds cost but falling rapidly. Best near-term replacement for daytime coal despatch.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Wind (Onshore + Offshore) <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">Onshore wind well established. India's offshore target: 30 GW by 2030 (currently nascent). Gujarat and Tamil Nadu coastlines best suited.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Nuclear (new reactors) <span class="trl-badge trl-9">TRL 8–9</span></div>
+            <div class="alt-desc">Firm, low-carbon baseload. India targets 100 GW nuclear by 2047. PHWRs and LWRs are proven; SMRs in R&amp;D. Long lead times limit near-term displacement of coal.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Biomass Cofiring / Dedicated Biomass <span class="trl-badge trl-7">TRL 7–8</span></div>
+            <div class="alt-desc">5–10% biomass cofiring in existing coal plants possible with minimal capex. Dedicated biomass plants for industrial heat. Feedstock (agri-residue, forest waste) available domestically.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OIL TRANSPORT -->
+    <div class="alt-card">
+      <div class="alt-header" style="background:#fff3ee">
+        <div class="alt-source-name">🛢️ Replacing Oil in Transport</div>
+        <span class="trl-badge trl-9">Current TRL: 9</span>
+      </div>
+      <div class="alt-body">
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Electric Vehicles (EVs) <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">2-wheelers and 3-wheelers leading (FAME scheme). Cars growing (2% share FY24). By 2030, 30% EV penetration in 2W/3W likely. Grid charging requires RE scale-up.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Ethanol / E20 Blending <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">India targeting 20% ethanol blend in petrol by FY2025–26 (E20). Ethanol from sugarcane molasses / grain. Current blending ~13–15% (FY24). Cuts 3–4 MMT of oil imports/year at E20.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">CBG / Bio-CNG for Vehicles <span class="trl-badge trl-7">TRL 7–8</span></div>
+            <div class="alt-desc">Compressed biogas from agri-waste, cattle dung, press mud. India targets 15 MMT CBG by 2023–24 (behind schedule). SATAT scheme: 5,000 CBG plants. Replaces CNG in city buses, 3-wheelers.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">SAF / Bio-ATF for Aviation <span class="trl-badge trl-6">TRL 6–7</span></div>
+            <div class="alt-desc">Sustainable aviation fuel from jatropha, agricultural residues. India conducting pilot flights. IndiGo and Air India in early partnerships. Likely commercial scale post-2028.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Green Hydrogen for Heavy Transport <span class="trl-badge trl-5">TRL 5–6</span></div>
+            <div class="alt-desc">Fuel cell trucks and rail. India's NGHM targets 5 MT green H₂ by 2030. High cost currently (~$4–6/kg vs $1 for grey H₂). Pilot projects underway on Delhi-Mumbai freight corridor.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAS COOKING/INDUSTRY -->
+    <div class="alt-card">
+      <div class="alt-header" style="background:#eef5fd">
+        <div class="alt-source-name">🔵 Replacing Gas (PNG/LPG) in Cooking &amp; Industry</div>
+        <span class="trl-badge trl-9">Current TRL: 9</span>
+      </div>
+      <div class="alt-body">
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Biogas / Biomethane (Household) <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">Small biogas digesters for rural household cooking. GOBAR-Dhan scheme: 75 lakh family biogas plants operational. Directly replaces LPG. Deep supply chain in FMCG/dairy biomass.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">CBG / Biomethane for PNG Grid <span class="trl-badge trl-7">TRL 7–8</span></div>
+            <div class="alt-desc">Compressed / purified biogas injected into natural gas grid. High-purity methane (&gt;95%) from municipal solid waste, press mud. GAIL, IOC exploring grid blending mandates.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Electric Induction Cooking <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">Replacing LPG with efficient electric induction stoves — feasible as RE grid expands. Lower lifecycle cost. Requires reliable rural electricity supply (24×7 power a prerequisite).</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Green Hydrogen for Fertilisers <span class="trl-badge trl-6">TRL 6–7</span></div>
+            <div class="alt-desc">Green ammonia / hydrogen to replace gas in urea production. RFCL and FCIL plants being converted in pilot mode. NGHM provides incentives. Cost parity expected post-2030.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Industrial Biomass Heat (Pellets/Briquettes) <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">Biomass pellets and briquettes replacing gas/coal in boilers, furnaces, brick kilns. Established technology. India's agri-residue availability: ~500 MT/yr. PAT scheme for efficiency.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COAL IN INDUSTRY -->
+    <div class="alt-card">
+      <div class="alt-header" style="background:#f5f5f5">
+        <div class="alt-source-name">🏭 Replacing Coal in Industry (Steel, Cement, Heat)</div>
+        <span class="trl-badge trl-9">Current TRL varies</span>
+      </div>
+      <div class="alt-body">
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Green Hydrogen DRI Steel <span class="trl-badge trl-6">TRL 6–7</span></div>
+            <div class="alt-desc">Direct Reduced Iron using H₂ instead of coking coal. India (JSW, Tata Steel) in pilot phase. India-Sweden partnership on H₂-DRI. Replaces ~60 MT coking coal import dependency if scaled.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Electric Arc Furnace (EAF) + RE <span class="trl-badge trl-9">TRL 9</span></div>
+            <div class="alt-desc">EAF using scrap steel powered by renewable electricity. India's steel scrap availability growing as vehicle/infra stock matures. Lower capex than blast furnace. Jsw, SAIL investing.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Biomass / Waste Heat in Cement <span class="trl-badge trl-7">TRL 7–8</span></div>
+            <div class="alt-desc">Adani Cement (Ambuja) using electric plasma arc in pre-calciner with Coolbrook (Finland). Biomass cofiring 10–20% in cement kilns proven. Calcination emissions remain (process CO₂).</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Syngas / Producer Gas from Biomass <span class="trl-badge trl-7">TRL 7–8</span></div>
+            <div class="alt-desc">Biomass gasification producing syngas for industrial heat. Niche but established — used in brick kilns, textile dyeing, food processing. Scale-up constrained by feedstock aggregation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OIL IN PETROCHEMICALS -->
+    <div class="alt-card">
+      <div class="alt-header" style="background:#fff9ee">
+        <div class="alt-source-name">🧪 Replacing Oil in Petrochemicals &amp; Lubricants</div>
+        <span class="trl-badge trl-9">Current TRL: 9</span>
+      </div>
+      <div class="alt-body">
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Bio-based Plastics / Bio-polymers <span class="trl-badge trl-5">TRL 5–6</span></div>
+            <div class="alt-desc">PLA, PHA from sugarcane/corn. Still early stage in India. Requires bio-refinery infrastructure. Reliance Industries, BPCL exploring partnerships.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Biodiesel (B5–B20 Blending) <span class="trl-badge trl-7">TRL 8</span></div>
+            <div class="alt-desc">Biodiesel from used cooking oil (UCO), jatropha, palm. India's UCO-to-biodiesel scheme (2023). NDDB, IOC partnering. B20 mandate for heavy vehicles planned by 2025–26. Partial substitution only.</div>
+          </div>
+        </div>
+        <div class="alt-row">
+          <div class="alt-arrow">→</div>
+          <div>
+            <div class="alt-tech-name">Advanced Drop-in Biofuels (Bio-LNG, HEFA) <span class="trl-badge trl-5">TRL 5–6</span></div>
+            <div class="alt-desc">Hydrotreated Esters and Fatty Acids (HEFA) from algae / waste fat for diesel and jet. Bio-LNG from biogas for long-haul trucks and ships. Likely commercial at scale post-2030 in India.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BIOENERGY OVERVIEW CARD -->
+    <div class="alt-card" style="border-color:#86efac">
+      <div class="alt-header" style="background:#f0fdf4">
+        <div class="alt-source-name">🌿 Bio-Based Alternatives: Summary</div>
+        <span class="trl-badge trl-9">Multiple TRLs</span>
+      </div>
+      <div class="alt-body">
+        <p style="font-size:0.82rem;color:var(--ink-light);margin-bottom:12px">India's biomass resource base is vast — ~500 MT/year of agricultural residues, 300+ MT of cattle/municipal waste, abundant sugarcane. The full utilisation potential could replace significant fossil fuel volumes:</p>
+        <div class="alt-row"><div class="alt-arrow">→</div><div><div class="alt-tech-name">Ethanol (E20)</div><div class="alt-desc">~3.5–4 Bn litres/yr at E20 → saves ~9 MMT crude oil annually (₹35,000 Cr in forex)</div></div></div>
+        <div class="alt-row"><div class="alt-arrow">→</div><div><div class="alt-tech-name">CBG (15 MMT potential)</div><div class="alt-desc">Can offset ~20% of LNG imports; also displaces 30 MMT coal equivalent in industry</div></div></div>
+        <div class="alt-row"><div class="alt-arrow">→</div><div><div class="alt-tech-name">Bio-LNG for shipping/trucks</div><div class="alt-desc">Long-haul truck fleet: 3.5 Mn vehicles — bio-LNG penetration of 10% = significant oil offset</div></div></div>
+        <div class="alt-row"><div class="alt-arrow">→</div><div><div class="alt-tech-name">Traditional biomass upgrade</div><div class="alt-desc">Converting 800M rural users from solid biomass to efficient biogas/induction reduces both oil and health burden</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 5: 2x2 MATRIX -->
+<section id="matrix-section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">2×2 Strategic Matrix: TRL vs. Substitution Effectiveness</h2>
+  </div>
+  <p class="intro-text">
+    Mapping bio-based and clean alternatives along two axes: <strong>Technology Readiness Level (TRL) / deployment readiness</strong> (Y-axis) and <strong>effectiveness as a substitute for oil and gas</strong> (X-axis). This framework — adapted from the 2×2 provided — identifies which technologies India should prioritise now vs. invest for the future.
+  </p>
+
+  <div class="matrix-section">
+    <div class="matrix-title">Bio-based &amp; Clean Substitutes for India's Fossil Fuel Dependence</div>
+    <div class="matrix-container">
+      <!-- Y axis -->
+      <div class="axis-label-y">
+        <span>High TRL / Deployable Now</span>
+        <span>↕ TRL / Deployment Readiness</span>
+        <span>Low TRL / Scale-up Stage</span>
+      </div>
+
+      <!-- Grid -->
+      <div class="matrix-grid">
+        <!-- Q1: High TRL, High Substitution -->
+        <div class="quadrant q1">
+          <div class="q-label">✅ Deploy Now — High Impact</div>
+          <div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">☀️ Solar PV + Storage</span>
+              <div class="tooltip-content">TRL 9. Replaces coal in power. India adding 25+ GW/yr. Cost below ₹2.5/kWh. Storage costs falling fast.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">💨 Wind (Onshore)</span>
+              <div class="tooltip-content">TRL 9. Replaces coal in power. ~46 GW installed. Strong resource in Gujarat, Tamil Nadu, Rajasthan.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">🌾 Ethanol / E20</span>
+              <div class="tooltip-content">TRL 9. Direct petrol substitute. E20 target by FY2026. Sugarcane + grain feedstock. Saves ~9 MMT crude/yr.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">🐄 CBG / Bio-CNG</span>
+              <div class="tooltip-content">TRL 8. Replaces CNG/LNG for city transport, PNG grid. SATAT scheme: 5,000 plants. 15 MMT potential.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">🍳 Biogas (Household)</span>
+              <div class="tooltip-content">TRL 9. Direct LPG/firewood substitute for 800M rural households. GOBAR-Dhan: 75 lakh plants already running.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">🔥 Biomass Pellets</span>
+              <div class="tooltip-content">TRL 9. Industrial heat / boiler fuel. Direct coal/gas replacement in ceramics, paper, food processing.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-green">⚡ EV (2W/3W)</span>
+              <div class="tooltip-content">TRL 9. Dominant segment in India. FAME scheme drives adoption. Cuts oil demand in city transport directly.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2: High TRL, Low Substitution -->
+        <div class="quadrant q2">
+          <div class="q-label">⚠️ Deploy but Limited Scope</div>
+          <div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-amber">🛖 Biodiesel (B20)</span>
+              <div class="tooltip-content">TRL 8. Partial diesel substitute from UCO / jatropha. Only replaces 5–20% of diesel. Feedstock-limited in India.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-amber">🔩 Syngas / Producer Gas</span>
+              <div class="tooltip-content">TRL 7–8. Replaces coal/gas in niche industrial heat. Brick kilns, textile processing. Feedstock aggregation challenge.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-amber">⚡ EAF Steelmaking</span>
+              <div class="tooltip-content">TRL 9. Replaces coal in steel via scrap + RE electricity. Limited by scrap availability — scrap stock grows with infrastructure maturity.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-amber">🏭 Biomass Cofiring</span>
+              <div class="tooltip-content">TRL 7–8. Replaces 5–10% coal in existing plants. Easy retrofit. But only marginal reduction in fossil use.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3: Low TRL, High Substitution -->
+        <div class="quadrant q3">
+          <div class="q-label">🚧 Invest &amp; Scale — High Future Impact</div>
+          <div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-blue">🌊 Offshore Wind</span>
+              <div class="tooltip-content">TRL 7. India target: 30 GW by 2030 (currently near zero). Massive resource off Gujarat and Tamil Nadu coast. Needs major infra investment.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-blue">🚗 EV (4-wheelers/trucks)</span>
+              <div class="tooltip-content">TRL 8. Rapidly scaling. Heavy trucks and buses in pilot. Long-haul freight: 2030+ timeline. Cuts largest oil demand segment.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-blue">🟢 Green Hydrogen (H₂)</span>
+              <div class="tooltip-content">TRL 5–6. Can replace gas in fertilisers, refining, steel. NGHM targets 5 MT/yr by 2030. Currently $4–6/kg vs $1 grey H₂. Cost parity expected post-2030.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-blue">✈️ SAF / Bio-ATF</span>
+              <div class="tooltip-content">TRL 6. Sustainable aviation fuel from agri-residue. Pilot flights done. Aviation is hardest-to-decarbonise segment. Scale-up 2028+.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-blue">🚢 Bio-LNG (Heavy Transport)</span>
+              <div class="tooltip-content">TRL 6–7. Replaces LNG/diesel for long-haul trucks and ships. Excellent substitute for hard-to-electrify transport. Commercial scale 2027–30.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-blue">⚓ H₂ Steel (DRI)</span>
+              <div class="tooltip-content">TRL 6. Hydrogen-DRI replaces coking coal — India's biggest import-heavy sector. JSW-Sweden pilot underway. 2030+ for commercial scale.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4: Low TRL, Low Substitution -->
+        <div class="quadrant q4">
+          <div class="q-label">🔬 R&amp;D — Longer Horizon</div>
+          <div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-purple">🧬 Advanced Drop-in Biofuels</span>
+              <div class="tooltip-content">TRL 4–6. HEFA, algae-to-diesel, cellulosic ethanol. Future full-fossil displacement but not near-term in India at scale. Research investment needed now.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-purple">⚛️ Nuclear SMR</span>
+              <div class="tooltip-content">TRL 4–5. Small Modular Reactors. BARC working on AHWR. Global development ongoing. Potential game-changer for firm low-carbon baseload post-2035.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-purple">🌿 Green Ammonia (shipping)</span>
+              <div class="tooltip-content">TRL 5. Replaces bunker fuel in ships. India has ports and chemical infra. Niche but fast-growing globally. Longer horizon for India specifically.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-purple">♻️ Bio-based Polymers</span>
+              <div class="tooltip-content">TRL 4–5. PLA, PHA replacing petroleum plastics. Very early stage in India. Requires bio-refinery scale-up — significant capital needs.</div>
+            </div>
+            <div class="tooltip-wrap">
+              <span class="tech-chip chip-purple">🔋 Thorium Reactors</span>
+              <div class="tooltip-content">TRL 3. India has world's largest thorium reserves (300,000 T). AHWR-300 design by BARC. Long-term energy independence potential but decades away.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Axis labels -->
+      <div class="axis-label-x">
+        <span>← Lower Substitution Effectiveness</span>
+        <span style="font-weight:700;color:var(--ink)">⟵ X-Axis ⟶</span>
+        <span>Higher Substitution Effectiveness →</span>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-top:1.5rem">
+      <span style="font-size:0.78rem;color:var(--ink-light)">🖱️ Hover over any technology chip for details</span>
+      <span class="tech-chip chip-green" style="pointer-events:none">High TRL + High Sub → Deploy Now</span>
+      <span class="tech-chip chip-amber" style="pointer-events:none">High TRL + Low Sub → Tactical</span>
+      <span class="tech-chip chip-blue" style="pointer-events:none">Low TRL + High Sub → Invest</span>
+      <span class="tech-chip chip-purple" style="pointer-events:none">Low TRL + Low Sub → R&amp;D</span>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 6: PATHWAYS -->
+<section id="pathways-section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Transition Pathways &amp; Policy Milestones</h2>
+  </div>
+  <p class="intro-text">
+    India's energy transition is not a single leap — it unfolds in overlapping waves, with near-term actions on deployable technologies (EVs, ethanol, solar) while simultaneously building the infrastructure for medium and long-term shifts (green hydrogen, offshore wind, nuclear expansion). The pathway below draws from India's official targets and IEA projections.
+  </p>
+
+  <div class="flex-row">
+    <div class="flex-half">
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:1.2rem; color:var(--ink)">Near-to-Medium Term (2024–2030)</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-now"></div>
+          <div class="tl-year">FY2025–26</div>
+          <div class="tl-title">Ethanol E20 Mandate &amp; CBG Scaling</div>
+          <div class="tl-body">20% ethanol blending in petrol (E20) across India. SATAT target: 5,000 CBG plants operational. GOBAR-Dhan biogas plants: 75 lakh. Saves ~9 MMT crude oil annually.</div>
+          <div class="tl-tags"><span class="tl-tag">Bioenergy</span><span class="tl-tag">Transport</span><span class="tl-tag">High TRL</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-now"></div>
+          <div class="tl-year">2025–26</div>
+          <div class="tl-title">500 GW Non-Fossil Electricity Target</div>
+          <div class="tl-body">India's NDC target: 500 GW installed non-fossil capacity by 2030. Solar to reach 280 GW, wind 100 GW. PLI for solar modules, ACC batteries, electrolysers in full implementation.</div>
+          <div class="tl-tags"><span class="tl-tag">Solar</span><span class="tl-tag">Wind</span><span class="tl-tag">Grid</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-near"></div>
+          <div class="tl-year">2026–27</div>
+          <div class="tl-title">EV Ecosystem Buildout</div>
+          <div class="tl-body">PM E-DRIVE scheme (₹11,000 Cr) accelerating 2W/3W/bus EVs. 50 GWh domestic battery manufacturing capacity target. ACC PLI: ₹18,100 Cr incentive. Charging infra on national highways every 25 km.</div>
+          <div class="tl-tags"><span class="tl-tag">EVs</span><span class="tl-tag">Batteries</span><span class="tl-tag">Transport</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-near"></div>
+          <div class="tl-year">2028–30</div>
+          <div class="tl-title">Green Hydrogen Mission Milestones</div>
+          <div class="tl-body">National Green Hydrogen Mission: 5 MT green H₂ production by 2030. 125 GW electrolyser deployment. SIGHT scheme provides incentives. Fertiliser plants, refinery begin pilot H₂ use. India targets being a net exporter of green H₂.</div>
+          <div class="tl-tags"><span class="tl-tag">Hydrogen</span><span class="tl-tag">Industry</span><span class="tl-tag">Medium TRL</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-mid"></div>
+          <div class="tl-year">2030</div>
+          <div class="tl-title">India Becomes Net Exporter of EVs &amp; Solar Modules</div>
+          <div class="tl-body">Per IEA ETP 2024 (APS), India's EV production exceeds domestic demand — net exporter by 2035. Solar module manufacturing: 56–63 GW capacity, export surplus to Africa and Europe. Battery production: 130 GWh (APS) — self-sufficient.</div>
+          <div class="tl-tags"><span class="tl-tag">Manufacturing</span><span class="tl-tag">Clean Tech Exports</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-half">
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:1.2rem; color:var(--ink)">Long-Term Pathway (2030–2047 &amp; Beyond)</h3>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-mid"></div>
+          <div class="tl-year">2031–35</div>
+          <div class="tl-title">Industrial Decarbonisation Wave</div>
+          <div class="tl-body">Hydrogen-DRI steel at commercial scale (JSW, Tata Steel). Cement sector: plasma pre-calciner and biomass cofiring at 15–20%. Offshore wind: 10–15 GW commissioned. Long-haul freight: pilot Bio-LNG / H₂ fuel cell trucks on NH corridors.</div>
+          <div class="tl-tags"><span class="tl-tag">Steel</span><span class="tl-tag">Cement</span><span class="tl-tag">Hydrogen</span><span class="tl-tag">Offshore Wind</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-mid"></div>
+          <div class="tl-year">2035–40</div>
+          <div class="tl-title">Nuclear Expansion &amp; Grid Storage</div>
+          <div class="tl-body">10 new PHWRs operational (22 GW total nuclear by 2031 in near plans). Pumped hydro: 66 GW target under NHP 2.0. Long-duration storage (iron-air batteries, flow batteries) commercially deployed. Coal phase-down begins in earnest with storage cushion.</div>
+          <div class="tl-tags"><span class="tl-tag">Nuclear</span><span class="tl-tag">Storage</span><span class="tl-tag">Baseload</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-long"></div>
+          <div class="tl-year">2040–47</div>
+          <div class="tl-title">India 2047 — Viksit Bharat Energy Vision</div>
+          <div class="tl-body">India's vision: energy self-sufficiency aligned with Viksit Bharat (Developed India) goal. Targets include 100 GW nuclear, 1,000+ GW renewables, net zero electricity grid, major reduction in fossil fuel imports. Thorium-cycle reactors enter prototype phase.</div>
+          <div class="tl-tags"><span class="tl-tag">Net Zero Grid</span><span class="tl-tag">Nuclear</span><span class="tl-tag">Thorium</span></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot tl-dot-long"></div>
+          <div class="tl-year">2070</div>
+          <div class="tl-title">India's Net Zero Emissions Target</div>
+          <div class="tl-body">India's UNFCCC-pledged Net Zero by 2070. Full electrification of transport, industry, buildings. Remaining hard-to-abate sectors covered by green H₂, CCS, and advanced biofuels. India's RDI Fund (USD 11 Bn — IEA SEI 2026) supports innovation pipeline.</div>
+          <div class="tl-tags"><span class="tl-tag">Net Zero</span><span class="tl-tag">Long-term</span><span class="tl-tag">CCS</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SECTION 7: SOURCES -->
+<section id="sources-ref">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">Sources &amp; Data References</h2>
+  </div>
+  <p style="font-size:0.875rem;color:var(--ink-light);margin-bottom:1.5rem">This dashboard draws exclusively on official government, intergovernmental, and peer-reviewed sources. No Wikipedia entries were used.</p>
+  <div class="sources-grid">
+    <div class="source-item">
+      <div class="source-org">IEA — International Energy Agency</div>
+      <div class="source-doc">Energy Technology Perspectives 2024 (ETP 2024) — Chapters 2 &amp; 3.4 (India)</div>
+      <div class="source-url">www.iea.org/reports/energy-technology-perspectives-2024</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">IEA — International Energy Agency</div>
+      <div class="source-doc">The State of Energy Innovation 2026 (SEI 2026) — India R&amp;D, TRL analysis</div>
+      <div class="source-url">www.iea.org/reports/the-state-of-energy-innovation-2026</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">IEA — International Energy Agency</div>
+      <div class="source-doc">India 2020 Energy Policy Review (updated analysis referenced)</div>
+      <div class="source-url">www.iea.org/reports/india-2020</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">Ministry of Petroleum &amp; Natural Gas (MoPNG), Govt. of India</div>
+      <div class="source-doc">Annual Report 2023–24: Crude oil import volumes, ethanol blending, CBG data</div>
+      <div class="source-url">petroleum.nic.in/annual-report</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">Central Electricity Authority (CEA), Govt. of India</div>
+      <div class="source-doc">Annual Report 2023–24 &amp; National Electricity Plan 2023–32</div>
+      <div class="source-url">cea.nic.in/annual-report</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">Ministry of New &amp; Renewable Energy (MNRE), Govt. of India</div>
+      <div class="source-doc">Annual Reports 2023–24; SATAT, GOBAR-Dhan scheme data; solar capacity statistics</div>
+      <div class="source-url">mnre.gov.in/reports</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">NITI Aayog, Govt. of India</div>
+      <div class="source-doc">India's Energy Transition: Pathways for Net Zero 2070; EV Report 2023</div>
+      <div class="source-url">niti.gov.in/energy-reports</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">Ministry of Heavy Industries (MHI), Govt. of India</div>
+      <div class="source-doc">PM E-DRIVE scheme; ACC PLI, AUTO PLI scheme documentation (2021–24)</div>
+      <div class="source-url">heavyindustries.gov.in</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">Ministry of New &amp; Renewable Energy (MNRE)</div>
+      <div class="source-doc">National Green Hydrogen Mission 2023 — SIGHT scheme, 5 MT target</div>
+      <div class="source-url">mnre.gov.in/national-green-hydrogen-mission</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">IEA — World Energy Outlook 2024</div>
+      <div class="source-doc">India energy demand projections, STEPS and APS scenarios</div>
+      <div class="source-url">www.iea.org/reports/world-energy-outlook-2024</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">The Energy and Resources Institute (TERI)</div>
+      <div class="source-doc">India's Biomass Resource Assessment; Bioenergy Transition Pathways 2022–2030</div>
+      <div class="source-url">teriin.org/reports</div>
+    </div>
+    <div class="source-item">
+      <div class="source-org">UNFCCC / India NDC</div>
+      <div class="source-doc">India's Updated Nationally Determined Contribution (2022) — 500 GW, 50% RE, Net Zero 2070</div>
+      <div class="source-url">unfccc.int/NDCRegistry</div>
+    </div>
+  </div>
+  <p style="font-size:0.75rem;color:var(--ink-faint);margin-top:1.5rem">
+    <em>Note: Some figures (import shares, capacity numbers) reflect FY2023–24 data as reported in above sources. TRL assessments are based on IEA ETP 2024 classification and the 2×2 framework provided. This dashboard is intended for informational and analytical purposes. Percentages are approximate and may differ slightly across sources due to varying methodologies and reporting periods.</em>
+  </p>
+</section>
+
+<footer>
+  <strong>India Energy: Sources, Dependencies &amp; Transition Pathways</strong><br>
+  Built using data from IEA ETP 2024, IEA State of Energy Innovation 2026, MoPNG, CEA, MNRE, NITI Aayog &amp; UNFCCC official sources.<br>
+  <span style="color:rgba(255,255,255,0.4);font-size:0.75rem;margin-top:8px;display:block">Designed for GitHub Pages deployment • Hover on matrix chips for details • Not affiliated with any government body or IEA</span>
+</footer>
+
+<script>
+  // Scroll to section
+  function scrollTo(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelectorAll('.nav-link').forEach(b => b.classList.remove('active'));
+    const map = {
+      'sources-section': 0, 'imports-section': 1, 'supply-section': 2,
+      'alternatives-section': 3, 'matrix-section': 4, 'pathways-section': 5, 'sources-ref': 6
+    };
+    document.querySelectorAll('.nav-link')[map[id]]?.classList.add('active');
+  }
+
+  // Tab switching
+  function showTab(group, name) {
+    document.querySelectorAll(`[id^="${group}-"]`).forEach(p => p.classList.remove('active'));
+    document.getElementById(`${group}-${name}`).classList.add('active');
+    event.target.closest('.tab-buttons')?.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // Animate bars on load
+  function animateBars() {
+    document.querySelectorAll('.ec-bar[data-width]').forEach(bar => {
+      const w = bar.getAttribute('data-width');
+      bar.style.width = '0%';
+      setTimeout(() => { bar.style.width = w + '%'; }, 200);
+    });
+  }
+
+  // Intersection observer for nav highlight
+  const sections = ['sources-section','imports-section','supply-section','alternatives-section','matrix-section','pathways-section','sources-ref'];
+  const navLinks = document.querySelectorAll('.nav-link');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = sections.indexOf(entry.target.id);
+        if (idx >= 0) {
+          navLinks.forEach(n => n.classList.remove('active'));
+          navLinks[idx]?.classList.add('active');
+        }
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+
+  window.addEventListener('load', animateBars);
+</script>
+</body>
+</html>
